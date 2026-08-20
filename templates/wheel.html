@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block content %}
+<div class="card"><h1>🎡 KARMA Wheel</h1><p>Demo internal-points wheel. Choose a number, currency and bet.</p>
+<form method="post" id="wheelForm"><label>Number</label><select name="chosen">{% for n in [1,5,10,15,20,30,50,200] %}<option value="{{n}}">{{n}}</option>{% endfor %}</select>
+<label>Currency</label><select name="currency"><option>Karma</option><option>Katching</option></select>
+<label>Bet</label><input name="bet" type="number" min="10" max="10000" step="1" value="10"><button>SPIN</button></form>
+<div class="wheel"><div id="slot">1×</div><div class="circle">1 • 5 • 10 • 15 • 20 • 30 • 50 • 200</div></div>
+{% if result %}<div class="result"><h2>Result: {{ result.result }}</h2><p>Multiplier: <b>{{ result.multiplier }}×</b></p>{% if result.win %}<p>Profit: +{{ "%.2f"|format(result.win) }}</p>{% else %}<p>Not a match.</p>{% endif %}</div>{% endif %}
+</div>
+<script>
+const form=document.getElementById('wheelForm'), slot=document.getElementById('slot');
+form.addEventListener('submit',()=>{slot.classList.add('spin');});
+</script>
+{% endblock %}

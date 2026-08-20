@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block content %}<h1>Admin</h1>
+<div class="card"><h2>Pending/Recent deposits</h2>{% for d in deposits %}<div class="row"><span>#{{d.id}} • {{d.username}} • PHP {{ "%.2f"|format(d.amount) }} • {{d.status}} • {{d.reference or "no reference"}}</span>{% if d.status=="pending" %}<form method="post" action="{{url_for('confirm_deposit',did=d.id)}}"><button>Confirm</button></form>{% endif %}</div>{% else %}<p>No deposits.</p>{% endfor %}</div>
+<div class="card"><h2>Users</h2>{% for x in users %}<p>#{{x.id}} {{x.username}} • Karma {{ "%.2f"|format(x.karma) }} • Katching {{ "%.2f"|format(x.katching) }}</p>{% endfor %}</div>{% endblock %}

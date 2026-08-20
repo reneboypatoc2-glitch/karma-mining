@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<h1>Welcome, {{ u.username }}</h1>
+<div class="grid balances"><div class="balance"><span>Karma</span><strong>{{ "%.2f"|format(u.karma) }}</strong></div><div class="balance"><span>Katching</span><strong>{{ "%.2f"|format(u.katching) }}</strong></div></div>
+<div class="actions"><a class="button" href="{{ url_for('deposit') }}">Deposit</a><form method="post" action="{{ url_for('daily') }}"><button>Claim +5 Katching</button></form><a class="button" href="{{ url_for('wheel') }}">Open Wheel</a></div>
+<div class="card"><h2>Your referral</h2><p>Code: <b>{{ u.referral_code }}</b></p><p>Share: <code>/register?ref={{ u.referral_code }}</code></p></div>
+<div class="card"><h2>Mining cycles</h2>{% for m in mining %}<p>Deposit #{{ m.deposit_id }} • {{ "%.2f"|format(m.total_karma) }} Karma • {% if m.active %}Active{% else %}Expired{% endif %}</p>{% else %}<p>No mining cycles yet.</p>{% endfor %}</div>
+<div class="card"><h2>Recent transactions</h2>{% for t in tx %}<p>{{ t.kind }} • {{ t.currency }} {{ "%.2f"|format(t.amount) }} • {{ t.note }}</p>{% else %}<p>No transactions yet.</p>{% endfor %}</div>
+{% endblock %}
