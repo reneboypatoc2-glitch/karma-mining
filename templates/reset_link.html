@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Password Reset — KARMA</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+<a class="brand" href="{{ url_for('index') }}">
+<img src="{{ url_for('static', filename='logo.png') }}">
+<span>KARMA</span>
+</a>
+</header>
+
+<main>
+
+<section class="card">
+
+<h1>Password Reset</h1>
+
+<p>Your reset link has been created.</p>
+
+<p>
+This is currently a prototype, so the reset link is shown here.
+</p>
+
+<p>
+<a href="{{ reset_url }}">
+Reset My Password
+</a>
+</p>
+
+<p>
+<small>
+The link expires in 30 minutes and can only be used once.
+</small>
+</p>
+
+</section>
+
+</main>
+
+</body>
+</html>
