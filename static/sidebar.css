@@ -1,0 +1,403 @@
+/* =========================================================
+   KARMA SIDEBAR
+   This file controls ONLY the sidebar/navigation.
+   Do not remove the existing style.css.
+   ========================================================= */
+
+
+/* -------------------------
+   Sidebar toggle
+   ------------------------- */
+
+#karma-sidebar-toggle {
+    display: none;
+}
+
+
+/* -------------------------
+   Small KARMA button
+   ------------------------- */
+
+.karma-menu-button {
+    position: fixed;
+    left: 14px;
+    top: 18px;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #071657;
+
+    border: 1px solid rgba(73, 220, 255, 0.35);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 10001;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.25),
+        0 0 12px rgba(50,210,255,.12);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.karma-menu-button:hover {
+    transform: scale(1.05);
+
+    box-shadow:
+        0 7px 25px rgba(0,0,0,.3),
+        0 0 18px rgba(50,210,255,.25);
+}
+
+
+.karma-menu-button img {
+    width: 38px;
+    height: 38px;
+
+    object-fit: contain;
+
+    border-radius: 9px;
+}
+
+
+/* -------------------------
+   Sidebar
+   ------------------------- */
+
+.karma-sidebar {
+    position: fixed;
+
+    left: -290px;
+    top: 0;
+
+    width: 270px;
+    height: 100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #071657 0%,
+            #07144a 55%,
+            #050f38 100%
+        );
+
+    border-right: 1px solid rgba(73,220,255,.18);
+
+    z-index: 10000;
+
+    padding: 20px 14px;
+
+    box-sizing: border-box;
+
+    transition: left .28s ease;
+
+    box-shadow: 8px 0 30px rgba(0,0,0,.25);
+}
+
+
+/* Open sidebar */
+
+#karma-sidebar-toggle:checked ~ .karma-sidebar {
+    left: 0;
+}
+
+
+/* -------------------------
+   Dark overlay
+   ------------------------- */
+
+.karma-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.55);
+
+    z-index: 9999;
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+
+
+#karma-sidebar-toggle:checked ~ .karma-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* -------------------------
+   Sidebar header
+   ------------------------- */
+
+.karma-sidebar-header {
+    height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 4px 8px;
+}
+
+
+.karma-sidebar-header img {
+    width: 48px;
+    height: 48px;
+
+    object-fit: contain;
+
+    border-radius: 10px;
+}
+
+
+.karma-sidebar-header span {
+    color: #38dcff;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    letter-spacing: 5px;
+}
+
+
+/* -------------------------
+   Divider
+   ------------------------- */
+
+.karma-sidebar-line {
+    height: 1px;
+
+    background: rgba(100,220,255,.16);
+
+    margin: 12px 5px 16px;
+}
+
+
+/* -------------------------
+   Navigation buttons
+   ------------------------- */
+
+.karma-nav-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+
+    min-height: 50px;
+
+    box-sizing: border-box;
+
+    padding: 10px 13px;
+
+    margin-bottom: 6px;
+
+    border-radius: 11px;
+
+    color: #dcecff;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+
+.karma-nav-item:hover {
+    background: rgba(48,218,255,.12);
+
+    color: #42ddff;
+
+    transform: translateX(3px);
+}
+
+
+.karma-nav-icon {
+    width: 27px;
+
+    text-align: center;
+
+    font-size: 22px;
+
+    color: #38dcff;
+}
+
+
+/* -------------------------
+   Register
+   ------------------------- */
+
+.register-item {
+    background: rgba(49,216,255,.10);
+
+    border: 1px solid rgba(49,216,255,.18);
+}
+
+
+/* -------------------------
+   Logout
+   ------------------------- */
+
+.karma-sidebar-bottom {
+    position: absolute;
+
+    left: 14px;
+    right: 14px;
+
+    bottom: 15px;
+}
+
+
+.logout-item {
+    color: #ffb8b8;
+}
+
+
+.logout-item .karma-nav-icon {
+    color: #ff8f8f;
+}
+
+
+/* -------------------------
+   Main website
+   ------------------------- */
+
+.karma-site {
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+    padding-left: 0;
+
+    transition:
+        margin-left .28s ease;
+}
+
+
+/* -------------------------
+   Top bar
+   ------------------------- */
+
+.karma-topbar {
+    min-height: 76px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 12px 25px 12px 82px;
+
+    box-sizing: border-box;
+
+    background: rgba(255,255,255,.02);
+
+    border-bottom: 1px solid rgba(100,220,255,.10);
+}
+
+
+.karma-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    text-decoration: none;
+}
+
+
+.karma-brand img {
+    width: 42px;
+    height: 42px;
+
+    object-fit: contain;
+
+    border-radius: 9px;
+}
+
+
+.karma-brand span {
+    font-size: 21px;
+
+    font-weight: 800;
+
+    letter-spacing: 4px;
+
+    color: #35dfff;
+}
+
+
+.karma-balance {
+    color: #35dfff;
+
+    font-weight: 700;
+
+    font-size: 14px;
+}
+
+
+/* -------------------------
+   Mobile
+   ------------------------- */
+
+@media (max-width: 600px) {
+
+    .karma-menu-button {
+        left: 10px;
+        top: 10px;
+
+        width: 44px;
+        height: 44px;
+    }
+
+    .karma-menu-button img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .karma-topbar {
+        padding-left: 67px;
+        padding-right: 15px;
+
+        min-height: 64px;
+    }
+
+    .karma-brand img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .karma-brand span {
+        font-size: 18px;
+    }
+
+    .karma-sidebar {
+        width: 265px;
+    }
+}
