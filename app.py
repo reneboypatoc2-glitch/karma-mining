@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, render_template_string, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, secrets, random, time, hashlib
 from functools import wraps
@@ -331,16 +331,10 @@ def login():
 
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
-
+    # Prototype: reset by username; the link is displayed on-screen.
     if request.method == "POST":
-
-        username = request.form.get(
-            "username",
-            ""
-        ).strip()
-
+        username = request.form.get("username", "").strip()
         con = db()
-
         user = con.execute(
             "SELECT id, username FROM users WHERE username=?",
             (username,)
@@ -348,190 +342,146 @@ def forgot_password():
 
         if not user:
             con.close()
+            flash("If that username exists, a reset link has been created.")
+            return redirect(url_for("forgot_password"))
 
-            flash(
-                "If that username exists, a reset link has been created."
-            )
-
-            return redirect(
-                url_for("forgot_password")
-            )
-
-        # Invalidate previous reset links.
         con.execute(
-            """
-            UPDATE password_resets
-            SET used=1
-            WHERE user_id=? AND used=0
-            """,
+            "UPDATE password_resets SET used=1 WHERE user_id=? AND used=0",
             (user["id"],)
         )
 
-        # Create secure random token.
         token = secrets.token_urlsafe(32)
-
-        token_hash = hashlib.sha256(
-            token.encode()
-        ).hexdigest()
-
+        token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
         now = int(time.time())
-
-        # Reset link expires after 30 minutes.
         expires = now + (30 * 60)
 
         con.execute(
             """
             INSERT INTO password_resets
-            (user_id,token_hash,expires_at,used,created_at)
-            VALUES(?,?,?,?,?)
+            (user_id, token_hash, expires_at, used, created_at)
+            VALUES (?, ?, ?, 0, ?)
             """,
-            (
-                user["id"],
-                token_hash,
-                expires,
-                0,
-                now
-            )
+            (user["id"], token_hash, expires, now)
         )
-
         con.commit()
         con.close()
 
-        reset_url = url_for(
-            "reset_password",
-            token=token,
-            _external=True
-        )
+        reset_url = url_for("reset_password", token=token, _external=True)
 
-        # Prototype:
-        # The reset link is displayed on screen.
-        # Later we can connect this to email.
-        return render_template(
-            "reset_link.html",
+        return render_template_string(
+            """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Password Reset — KARMA</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><a class="brand" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='logo.png') }}" onerror="this.style.display='none'"><span>KARMA</span></a></header>
+<main><div class="form card">
+<h2>Password Reset</h2>
+<p>Your reset link has been created for this prototype.</p>
+<p><a class="button" href="{{ reset_url }}">Reset Password</a></p>
+<p><small>This link expires in 30 minutes and can only be used once.</small></p>
+<p><a href="{{ url_for('login') }}">Back to Login</a></p>
+</div></main>
+</body></html>""",
             reset_url=reset_url
         )
 
-    return render_template(
-        "forgot_password.html"
+    return render_template_string(
+        """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forgot Password — KARMA</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><a class="brand" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='logo.png') }}" onerror="this.style.display='none'"><span>KARMA</span></a></header>
+<main><div class="form card">
+<h2>Forgot Password</h2>
+<p>Enter your username to create a password reset link.</p>
+<form method="post">
+<input type="text" name="username" placeholder="Username" required autocomplete="username">
+<button type="submit">Create Reset Link</button>
+</form>
+<p><a href="{{ url_for('login') }}">Back to Login</a></p>
+</div></main>
+</body></html>"""
     )
 
 
 @app.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
-
-    token_hash = hashlib.sha256(
-        token.encode()
-    ).hexdigest()
-
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
     now = int(time.time())
-
     con = db()
 
     reset = con.execute(
         """
-        SELECT *
-        FROM password_resets
-        WHERE token_hash=?
-        AND used=0
-        AND expires_at>?
+        SELECT * FROM password_resets
+        WHERE token_hash=? AND used=0 AND expires_at>?
+        ORDER BY id DESC LIMIT 1
         """,
-        (
-            token_hash,
-            now
-        )
+        (token_hash, now)
     ).fetchone()
 
     if not reset:
-
         con.close()
-
-        flash(
-            "This password reset link is invalid or has expired."
-        )
-
-        return redirect(
-            url_for("forgot_password")
-        )
+        flash("This password reset link is invalid or has expired.")
+        return redirect(url_for("forgot_password"))
 
     if request.method == "POST":
-
-        password = request.form.get(
-            "password",
-            ""
-        )
-
-        confirm = request.form.get(
-            "confirm_password",
-            ""
-        )
+        password = request.form.get("password", "")
+        confirm = request.form.get("confirm_password", "")
 
         if len(password) < 8:
-
-            flash(
-                "Password must be at least 8 characters."
-            )
-
             con.close()
-
-            return redirect(
-                url_for(
-                    "reset_password",
-                    token=token
-                )
-            )
+            flash("Password must be at least 8 characters.")
+            return redirect(url_for("reset_password", token=token))
 
         if password != confirm:
-
-            flash(
-                "Passwords do not match."
-            )
-
             con.close()
-
-            return redirect(
-                url_for(
-                    "reset_password",
-                    token=token
-                )
-            )
+            flash("Passwords do not match.")
+            return redirect(url_for("reset_password", token=token))
 
         con.execute(
-            """
-            UPDATE users
-            SET password_hash=?
-            WHERE id=?
-            """,
-            (
-                generate_password_hash(password),
-                reset["user_id"]
-            )
+            "UPDATE users SET password_hash=? WHERE id=?",
+            (generate_password_hash(password), reset["user_id"])
         )
-
-        # Make the reset link single-use.
         con.execute(
-            """
-            UPDATE password_resets
-            SET used=1
-            WHERE id=?
-            """,
+            "UPDATE password_resets SET used=1 WHERE id=?",
             (reset["id"],)
         )
-
         con.commit()
         con.close()
 
-        flash(
-            "Password changed successfully. You can now log in."
-        )
-
-        return redirect(
-            url_for("login")
-        )
+        flash("Password changed successfully. You can now log in.")
+        return redirect(url_for("login"))
 
     con.close()
 
-    return render_template(
-        "reset_password.html"
+    return render_template_string(
+        """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Set New Password — KARMA</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><a class="brand" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='logo.png') }}" onerror="this.style.display='none'"><span>KARMA</span></a></header>
+<main><div class="form card">
+<h2>Set New Password</h2>
+<form method="post">
+<input type="password" name="password" placeholder="New Password" minlength="8" required autocomplete="new-password">
+<input type="password" name="confirm_password" placeholder="Confirm New Password" minlength="8" required autocomplete="new-password">
+<button type="submit">Change Password</button>
+</form>
+<p><a href="{{ url_for('login') }}">Back to Login</a></p>
+</div></main>
+</body></html>"""
     )
 
 
