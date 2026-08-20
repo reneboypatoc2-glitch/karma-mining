@@ -1,2 +1,19 @@
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#0d1020;color:#eee}header{display:flex;justify-content:space-between;align-items:center;padding:16px 6%;border-bottom:1px solid #282d48;background:#11152a;position:sticky;top:0}.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:800;font-size:24px}.brand img{width:42px;height:42px;object-fit:contain}.brand span{letter-spacing:2px}nav{display:flex;gap:14px;align-items:center}nav a{color:#ddd;text-decoration:none}.button,button{display:inline-block;border:0;border-radius:10px;padding:11px 16px;background:#8b5cf6;color:#fff;text-decoration:none;cursor:pointer;font-weight:700}.ghost{background:transparent;border:1px solid #444a69}main{max-width:1100px;margin:0 auto;padding:35px 20px}.hero{padding:65px 25px;border-radius:24px;background:linear-gradient(135deg,#161b38,#24204a);margin-bottom:24px}.hero h1{font-size:60px;margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.card,.balance{background:#151a30;border:1px solid #2b3150;border-radius:16px;padding:20px;margin:18px 0}.balance span{display:block;color:#9ca3c7}.balance strong{font-size:32px}.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.form{max-width:480px;margin:40px auto}.form form{display:grid;gap:12px}.form input,.form select,select,input{width:100%;padding:13px;border-radius:10px;border:1px solid #3b4162;background:#0f1325;color:#fff}.flash,.notice,.result{padding:14px;border-radius:10px;background:#252a48;margin-bottom:18px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #2b3150}.wheel{text-align:center;margin:25px 0}.circle{margin:15px auto;padding:60px 20px;border:14px solid #6d4ad8;border-radius:50%;max-width:380px;background:#1a1f38;font-size:22px;font-weight:800}.wheel #slot{font-size:28px;font-weight:900;background:#22284a;border-radius:10px;padding:14px}.spin{animation:spin .9s linear infinite}@keyframes spin{to{transform:translateX(15px)}}footer{text-align:center;color:#7e85aa;padding:40px}
-code{word-break:break-all}a{color:#b9a4ff}
+
+.wheel-card{max-width:980px;margin:auto;text-align:center}
+.multiplier-wrap{position:relative;max-width:760px;margin:25px auto}
+.mult-reel{height:72px;overflow:hidden;border:3px solid #bba8ff;border-radius:14px;background:#0b0e1b}
+.mult-track{height:100%;display:flex;align-items:center;width:max-content;transition:transform 3s cubic-bezier(.1,.8,.15,1)}
+.mult-track span{width:92px;height:66px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900}
+.mult-pointer{position:absolute;z-index:2;left:50%;top:-4px;height:80px;width:4px;background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff}
+.wheel-stage{position:relative;width:min(620px,92vw);margin:25px auto}
+.wheel-outer{position:relative;width:100%;aspect-ratio:1}
+#wheelSvg{width:100%;height:100%;filter:drop-shadow(0 15px 25px #0008)}
+#wheelGroup{transform-origin:300px 300px;transition:transform 4.5s cubic-bezier(.08,.75,.15,1)}
+.seg-label{font-size:17px;font-weight:900;fill:#fff;paint-order:stroke;stroke:#17122b;stroke-width:3px}
+.wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#17132d;border:8px solid #bba8ff;font-weight:900}
+.wheel-pointer{position:absolute;z-index:5;left:50%;top:-8px;transform:translateX(-50%);border-left:18px solid transparent;border-right:18px solid transparent;border-top:35px solid #f4d35e}
+.wheel-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;max-width:850px;margin:auto}
+.wheel-form label{display:block;text-align:left;margin-bottom:6px;color:#aab0d0}
+.wheel-form input,.wheel-form select{width:100%;padding:13px;border-radius:10px;background:#0f1325;color:#fff;border:1px solid #3b4162}
+.wheel-form button{height:48px;min-width:120px}
+@media(max-width:700px){.wheel-form{grid-template-columns:1fr 1fr}.wheel-form button{grid-column:1/-1}.seg-label{font-size:15px}}
