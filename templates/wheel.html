@@ -1,13 +1,51 @@
-{% extends "base.html" %}{% block content %}
-<div class="card"><h1>🎡 KARMA Wheel</h1><p>Demo internal-points wheel. Choose a number, currency and bet.</p>
-<form method="post" id="wheelForm"><label>Number</label><select name="chosen">{% for n in [1,5,10,15,20,30,50,200] %}<option value="{{n}}">{{n}}</option>{% endfor %}</select>
-<label>Currency</label><select name="currency"><option>Karma</option><option>Katching</option></select>
-<label>Bet</label><input name="bet" type="number" min="10" max="10000" step="1" value="10"><button>SPIN</button></form>
-<div class="wheel"><div id="slot">1×</div><div class="circle">1 • 5 • 10 • 15 • 20 • 30 • 50 • 200</div></div>
-{% if result %}<div class="result"><h2>Result: {{ result.result }}</h2><p>Multiplier: <b>{{ result.multiplier }}×</b></p>{% if result.win %}<p>Profit: +{{ "%.2f"|format(result.win) }}</p>{% else %}<p>Not a match.</p>{% endif %}</div>{% endif %}
+{% extends "base.html" %}
+{% block content %}
+<div class="card wheel-card">
+<h1>🎡 KARMA Wheel</h1>
+<p>Choose a number, currency, and bet.</p>
+<div class="multiplier-wrap"><div class="mult-pointer"></div><div class="mult-reel" id="multReel"><div class="mult-track" id="multTrack">
+<span>1×</span><span>2×</span><span>3×</span><span>5×</span><span>10×</span><span>15×</span><span>25×</span><span>50×</span>
+<span>1×</span><span>2×</span><span>3×</span><span>5×</span><span>10×</span><span>15×</span><span>25×</span><span>50×</span>
+</div></div></div>
+<div class="wheel-stage"><div class="wheel-pointer"></div><div class="wheel-outer">
+<svg id="wheelSvg" viewBox="0 0 600 600"></svg><div class="wheel-center">KARMA</div>
+</div></div>
+<form method="post" id="wheelForm" class="wheel-form">
+<div><label>Number</label><select name="chosen">{% for n in [1,5,10,15,20,30,50,200] %}<option value="{{n}}">{{n}}</option>{% endfor %}</select></div>
+<div><label>Currency</label><select name="currency"><option>Karma</option><option>Katching</option></select></div>
+<div><label>Bet 10–10,000</label><input name="bet" type="number" min="10" max="10000" value="10" required></div>
+<button id="spinBtn">SPIN</button>
+</form>
+{% if result %}<div class="result" id="result" data-result="{{result.result}}" data-mult="{{result.multiplier}}">
+<h2>Result: {{result.result}}</h2><p>Multiplier: <b>{{result.multiplier}}×</b></p>
+{% if result.win %}<p>Profit: +{{"%.2f"|format(result.win)}}</p>{% else %}<p>No match — bet lost.</p>{% endif %}
+</div>{% endif %}
 </div>
 <script>
-const form=document.getElementById('wheelForm'), slot=document.getElementById('slot');
-form.addEventListener('submit',()=>{slot.classList.add('spin');});
+(()=> {
+const vals=[...Array(21).fill(1),...Array(13).fill(5),...Array(7).fill(10),...Array(4).fill(15),...Array(4).fill(20),...Array(2).fill(30),...Array(2).fill(50),200];
+const svg=document.getElementById('wheelSvg'), NS='http://www.w3.org/2000/svg', cx=300,cy=300,r=286,step=360/54;
+const g=document.createElementNS(NS,'g'); g.id='wheelGroup';
+const colors=['#7045d6','#3159c8','#159a8a','#df8a29','#b83e6d','#3f7f49','#985332','#4b5563'];
+function pt(a,rr){return[cx+Math.cos(a)*rr,cy+Math.sin(a)*rr]}
+vals.forEach((v,i)=>{
+ let a0=(-90+i*step)*Math.PI/180,a1=(-90+(i+1)*step)*Math.PI/180;
+ let p1=pt(a0,r),p2=pt(a1,r);
+ let path=document.createElementNS(NS,'path');
+ path.setAttribute('d',`M ${cx} ${cy} L ${p1[0]} ${p1[1]} A ${r} ${r} 0 0 1 ${p2[0]} ${p2[1]} Z`);
+ path.setAttribute('fill',colors[i%colors.length]);path.setAttribute('stroke','#fff');path.setAttribute('stroke-width','2');g.appendChild(path);
+ let m=(-90+(i+.5)*step)*Math.PI/180,[x,y]=pt(m,190),t=document.createElementNS(NS,'text');
+ t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','middle');t.setAttribute('class','seg-label');t.textContent=v;g.appendChild(t);
+});
+svg.appendChild(g);
+const form=document.getElementById('wheelForm'), btn=document.getElementById('spinBtn'), result=document.getElementById('result'), track=document.getElementById('multTrack');
+form.addEventListener('submit',()=>{btn.disabled=true;btn.textContent='SPINNING…';});
+if(result){
+ const target=+result.dataset.result, indexes=vals.map((v,i)=>v===target?i:-1).filter(i=>i>=0), idx=indexes[Math.floor(Math.random()*indexes.length)];
+ g.style.transform=`rotate(${2160-(idx+.5)*step}deg)`;
+ const ms=[1,2,3,5,10,15,25,50], mi=ms.indexOf(+result.dataset.mult);
+ track.style.transform=`translateX(${-(8+mi)*92+180}px)`;
+}
+})();
 </script>
 {% endblock %}
