@@ -1,22 +1,20 @@
-# KARMA Mining Site — Demo
 
-This is a starter Flask + SQLite website for the KARMA concept.
+.wheel-card{max-width:980px;margin:auto;text-align:center}
+.multiplier-wrap{position:relative;max-width:760px;margin:25px auto}
+.mult-reel{height:72px;overflow:hidden;border:3px solid #bba8ff;border-radius:14px;background:#0b0e1b}
+.mult-track{height:100%;display:flex;align-items:center;width:max-content;transition:transform 3s cubic-bezier(.1,.8,.15,1)}
+.mult-track span{width:92px;height:66px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900}
+.mult-pointer{position:absolute;z-index:2;left:50%;top:-4px;height:80px;width:4px;background:#fff;transform:translateX(-50%);box-shadow:0 0 12px #fff}
+.wheel-stage{position:relative;width:min(620px,92vw);margin:25px auto}
+.wheel-outer{position:relative;width:100%;aspect-ratio:1}
+#wheelSvg{width:100%;height:100%;filter:drop-shadow(0 15px 25px #0008)}
+#wheelGroup{transform-origin:300px 300px;transition:transform 4.5s cubic-bezier(.08,.75,.15,1)}
+.seg-label{font-size:17px;font-weight:900;fill:#fff;paint-order:stroke;stroke:#17122b;stroke-width:3px}
+.wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#17132d;border:8px solid #bba8ff;font-weight:900}
+.wheel-pointer{position:absolute;z-index:5;left:50%;top:-8px;transform:translateX(-50%);border-left:18px solid transparent;border-right:18px solid transparent;border-top:35px solid #f4d35e}
+.wheel-form{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;max-width:850px;margin:auto}
+.wheel-form label{display:block;text-align:left;margin-bottom:6px;color:#aab0d0}
+.wheel-form input,.wheel-form select{width:100%;padding:13px;border-radius:10px;background:#0f1325;color:#fff;border:1px solid #3b4162}
+.wheel-form button{height:48px;min-width:120px}
+@media(max-width:700px){.wheel-form{grid-template-columns:1fr 1fr}.wheel-form button{grid-column:1/-1}.seg-label{font-size:15px}}
 
-Included:
-- Registration/login/logout
-- Secure password hashing
-- User dashboard
-- Karma and Katching balances
-- Manual deposit request flow
-- 8-day mining cycle: every PHP 10 confirmed = 50 Karma total
-- Daily Katching claim: 5/day
-- Recurring referral reward: 1 Katching per confirmed PHP 10 deposited by a referred user
-- Wheel game in demo mode using Karma/Katching
-- Server-side random result generation
-- Admin dashboard for confirming deposits and viewing users/transactions
-
-Important:
-- This prototype does NOT connect to a payment processor.
-- It does NOT provide cash withdrawal.
-- The wheel uses internal points only.
-- Before public launch, have the deposit/reward/game mechanics reviewed for applicable laws, payment-provider rules, and responsible-gaming requirements.
