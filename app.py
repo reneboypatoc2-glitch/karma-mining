@@ -334,6 +334,7 @@ def confirm_deposit(did):
     flash("Deposit confirmed and mining activated.")
     return redirect(url_for("admin"))
 
+init_db()
+
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
