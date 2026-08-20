@@ -1,23 +1,127 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KARMA</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>KARMA</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
 </head>
+
 <body>
-<header><a class="brand" href="{{ url_for('index') }}">
-{% if config and false %}{% endif %}
-<img src="{{ url_for('static', filename='logo.png') }}" onerror="this.style.display='none'"> <span>KARMA</span></a>
-<nav>
-{% if user %}
-<a href="{{ url_for('dashboard') }}">Dashboard</a><a href="{{ url_for('deposit') }}">Deposit</a><a href="{{ url_for('wheel') }}">Wheel</a>
-{% if user.is_admin %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
-<a href="{{ url_for('logout') }}">Logout</a>
-{% else %}<a href="{{ url_for('login') }}">Login</a><a class="button" href="{{ url_for('register') }}">Register</a>{% endif %}
-</nav></header>
-<main>
-{% with messages=get_flashed_messages() %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
-{% block content %}{% endblock %}
-</main>
-<footer>KARMA • Demo / internal-points prototype</footer>
-</body></html>
+
+<!-- Mobile/sidebar toggle -->
+<input type="checkbox" id="karma-sidebar-toggle">
+
+<!-- Small KARMA logo button -->
+<label for="karma-sidebar-toggle" class="karma-menu-button">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="KARMA">
+</label>
+
+<!-- Dark overlay when sidebar is open -->
+<label for="karma-sidebar-toggle" class="karma-overlay"></label>
+
+<!-- Sidebar -->
+<aside class="karma-sidebar">
+
+    <div class="karma-sidebar-header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="KARMA">
+        <span>KARMA</span>
+    </div>
+
+    <div class="karma-sidebar-line"></div>
+
+    {% if user %}
+
+    <a class="karma-nav-item" href="{{ url_for('dashboard') }}">
+        <span class="karma-nav-icon">⌂</span>
+        <span>Dashboard</span>
+    </a>
+
+    <a class="karma-nav-item" href="{{ url_for('deposit') }}">
+        <span class="karma-nav-icon">＋</span>
+        <span>Deposit</span>
+    </a>
+
+    <a class="karma-nav-item" href="{{ url_for('wheel') }}">
+        <span class="karma-nav-icon">◉</span>
+        <span>Wheel</span>
+    </a>
+
+    {% if user.is_admin %}
+    <a class="karma-nav-item" href="{{ url_for('admin') }}">
+        <span class="karma-nav-icon">⚙</span>
+        <span>Admin</span>
+    </a>
+    {% endif %}
+
+    <div class="karma-sidebar-bottom">
+
+        <div class="karma-sidebar-line"></div>
+
+        <a class="karma-nav-item logout-item" href="{{ url_for('logout') }}">
+            <span class="karma-nav-icon">↪</span>
+            <span>Logout</span>
+        </a>
+
+    </div>
+
+    {% else %}
+
+    <a class="karma-nav-item" href="{{ url_for('login') }}">
+        <span class="karma-nav-icon">→</span>
+        <span>Login</span>
+    </a>
+
+    <a class="karma-nav-item register-item" href="{{ url_for('register') }}">
+        <span class="karma-nav-icon">+</span>
+        <span>Create Account</span>
+    </a>
+
+    {% endif %}
+
+</aside>
+
+
+<!-- Main website -->
+<div class="karma-site">
+
+    <header class="karma-topbar">
+
+        <a class="karma-brand" href="{{ url_for('index') }}">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="KARMA">
+            <span>KARMA</span>
+        </a>
+
+        {% if user %}
+        <div class="karma-balance">
+            KARMA
+        </div>
+        {% endif %}
+
+    </header>
+
+
+    <main>
+
+        {% with messages=get_flashed_messages() %}
+            {% for m in messages %}
+                <div class="flash">{{ m }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+
+    <footer>
+        KARMA • Demo / internal-points prototype
+    </footer>
+
+</div>
+
+</body>
+</html>
